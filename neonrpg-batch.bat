@@ -1,0 +1,192 @@
+:: Copyright VrSlasherGaming/VrSlasherYT
+@echo off
+Title Neon Evolution RPG
+
+:: main menu code
+:menu
+Title Neon Evolution : Menu
+cls
+echo Neon Evolution RPG
+echo --------------------
+echo 1) Begin
+echo 2) Close
+set /p c=C:/enter:
+
+if "%c%"=="1" goto new
+if "%c%"=="2" exit
+goto menu
+
+:new
+set /a health=150
+set /a monsterhealth=15
+set /a playerdmg=5
+set /a monsterdmg=6
+set /a weaponxp=0
+set /a weaponxprequiredtolevel=100
+set /a weaponlevel=1
+set weaponplayer=fists
+set armorplayer=none
+set weaponcamo=default
+goto home
+
+:home
+call:statcheck
+cls
+title Neon Evolution : Home
+echo Welcome home player!
+echo --------------------
+echo Nothing to worry about
+echo ----------------------
+echo 1) FIGHT
+echo 2) QUIT
+echo 3) GEAR
+echo 4) MOD MENU
+set /p c=C:/
+
+if "%c%"=="1" goto levelselect
+if "%c%"=="2" goto menu
+if "%c%"=="3" goto gear
+if "%c%"=="4" goto modmenu
+goto home
+
+:levelselect
+cls
+echo Level Select
+echo -----------------
+echo 1) Easy
+echo 2) Medium
+echo 3) Hard
+echo 4) Extra Hard
+echo 5) You will die
+echo 6) Go Back
+set /p c=C:/
+
+if "%c%"=="1" set /a monsterhealth=10
+if "%c%"=="2" set /a monsterhealth=25
+if "%c%"=="3" set /a monsterhealth=50
+if "%c%"=="4" set /a monsterhealth=100
+if "%c%"=="5" set /a monsterhealth=150
+if "%c%"=="6" goto home
+goto encounter1
+
+:encounter1
+title Neon Evolution : FIGHT
+cls
+if not %monsterhealth% GEQ 0 goto:encounterfinished
+echo You encountered a wild Cyberdog!
+echo --------------------------------
+echo HP: %health%
+echo Enemy HP: %monsterhealth%
+echo --------------------------------
+echo 1) ATTACK
+echo When encounter finished please do 2
+echo 2) PUSSY OUT
+echo --------------------------------
+set /p c=C:/
+
+if "!c!"=="1" goto attack
+if "%c%"=="2" goto home
+
+:: The code for the player attacking XD
+:attack
+if not %monsterhealth% GEQ 0 goto:encounterfinished
+set /a health-=%monsterdmg%
+set /a monsterhealth-=%playerdmg%
+goto encounter1
+
+:: triggered when the enemy has 0 health
+:encounterfinished
+call:statcheck
+set /a health=150
+set /a monsterhealth=15
+set /a weaponxp+=10
+goto home
+
+:: shows current gear equipped
+:gear
+cls
+echo Gear:
+echo ---------------
+echo Main Weapon: %weaponplayer%
+echo Weapon Skin: %weaponcamo%
+echo Armor: %armorplayer%
+echo Weapon Level: %weaponlevel%
+echo Weapon XP: %weaponxp%
+echo Till Next Level: %weaponxprequiredtolevel%
+echo ---------------
+echo 1) Return
+set /p c=C:/
+
+if "%c%"=="1" goto home
+
+:: For Devs only & modders for testing
+:modmenu
+cls
+echo Mod Menu
+echo -------------------
+echo 1) Choose Gear
+echo 2) Infinite Health
+echo 3) Choose Weapon Skin
+echo 4) Return
+echo -------------------
+set /p c=C:/
+
+if "%c%"=="1" goto choosegear
+if "%c%"=="2" set /a health=1000000
+if "%c%"=="3" goto chooseweaponskin
+if "%c%"=="4" goto home
+
+:: accessed via mod menu
+:choosegear
+cls
+echo Choose Gear
+echo ------------------------
+echo 1) Short Sword
+echo 2) Long Sword
+echo 3) Leather Armor
+echo 4) Scrap Armor
+echo 5) Metal Armor
+echo ------------------------
+set /p c=C:/
+
+if "%c%"=="1" set weaponplayer=shortsword
+if "%c%"=="2" set weaponplayer=longsword
+if "%c%"=="3" set armorplayer=leatherarmor
+if "%c%"=="4" set armorplayer=scraparmor
+if "%c%"=="5" set armorplayer=metalarmor
+goto home
+
+:: Used to update stats and gear
+:statcheck
+if "%weaponplayer%"=="shortsword" set /a playerdmg+=10
+if "%weaponplayer%"=="longsword" set /a playerdmg+=15
+if "%armorplayer%"=="leatherarmor" set /a health+=25
+if "%armorplayer%"=="scraparmor" set /a health+=50
+if "%armorplayer%"=="metalarmor" set /a health+=100
+if "%weaponxp%"=="%weaponxprequiredtolevel%" set /a weaponlevel+=1
+if "%weaponxp%"=="%weaponxprequiredtolevel%" set /a weaponxprequiredtolevel*=2
+if "%weaponxp%"== GEQ %weaponxprequiredtolevel% goto:weaponlevelup
+exit /b
+
+:: Cheat to get any skin
+:chooseweaponskin
+cls
+title You're a cheater
+echo Weapon Skin
+echo ------------------
+echo 1) Default
+echo 2) Gold
+echo 3) Diamond
+echo 4) Return
+set /p c:C:/
+
+if "%c%"=="1" set weaponcamo=default
+if "%c%"=="2" set weaponcamo=gold
+if "%c%"=="3" set weaponcamo=diamond
+if "%c%"=="4" goto home
+
+:: once weapon leveled up comes here
+:weaponlevelup
+cls
+set /a weaponxp=0
+goto home
